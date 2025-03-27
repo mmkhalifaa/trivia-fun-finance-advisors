@@ -22,6 +22,7 @@ interface QuizResultsProps {
     name: string;
     description: string;
   } | null;
+  quizType?: string;
 }
 
 export const QuizResults = ({
@@ -31,6 +32,7 @@ export const QuizResults = ({
   streakDays,
   showConfetti = true,
   badgeEarned = null,
+  quizType = 'daily',
 }: QuizResultsProps) => {
   const stats: ResultStat[] = [
     {
@@ -51,6 +53,19 @@ export const QuizResults = ({
   ];
   
   const percentage = Math.round((score / totalQuestions) * 100);
+  
+  const getQuizTypeTitle = () => {
+    switch(quizType) {
+      case 'morning-meeting':
+        return "Morning Meeting Challenge";
+      case 'structured-products':
+        return "Structured Products Challenge";
+      case 'estate-planning':
+        return "Estate Planning Challenge";
+      default:
+        return "Daily Quiz";
+    }
+  };
   
   return (
     <div className="max-w-md mx-auto text-center">
@@ -78,7 +93,7 @@ export const QuizResults = ({
              "Keep practicing!"}
           </h1>
           <p className="text-muted-foreground">
-            You've completed today's financial trivia challenge. 
+            You've completed the {getQuizTypeTitle().toLowerCase()}. 
             {score === totalQuestions ? " Perfect score!" : ""}
           </p>
         </div>

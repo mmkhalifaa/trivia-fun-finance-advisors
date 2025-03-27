@@ -1,4 +1,3 @@
-
 import { Question } from "../components/quiz/QuizQuestion";
 import { BadgeInfo } from "../components/badges/BadgeCard";
 
@@ -63,6 +62,114 @@ export const mockQuestions: Question[] = [
     ],
     explanation: "We're currently recommending a barbell approach in fixed income, combining short-term securities for liquidity with longer-dated bonds for yield, while maintaining a neutral duration overall.",
     category: "Fixed Income"
+  }
+];
+
+// Morning Meeting challenge questions
+export const mockMorningMeetingQuestions: Question[] = [
+  {
+    id: 'mm1',
+    text: "Which tax benefit did Dave Frame emphasize most in today's morning meeting?",
+    options: [
+      { id: 'mm1a', text: "Roth IRA conversion opportunities", isCorrect: false },
+      { id: 'mm1b', text: "Qualified Business Income (QBI) deductions", isCorrect: true },
+      { id: 'mm1c', text: "Capital loss harvesting", isCorrect: false },
+      { id: 'mm1d', text: "Charitable remainder trusts", isCorrect: false }
+    ],
+    explanation: "Dave Frame highlighted the importance of Qualified Business Income deductions for small business owners, noting recent IRS clarifications on eligibility requirements.",
+    category: "Morning Meeting"
+  },
+  {
+    id: 'mm2',
+    text: "According to Paula Dolan's market update this morning, which sector is our firm currently overweighting?",
+    options: [
+      { id: 'mm2a', text: "Consumer Staples", isCorrect: false },
+      { id: 'mm2b', text: "Utilities", isCorrect: false },
+      { id: 'mm2c', text: "Technology", isCorrect: true },
+      { id: 'mm2d', text: "Energy", isCorrect: false }
+    ],
+    explanation: "Paula Dolan's market update indicated our firm is currently overweighting Technology based on strong earnings growth and AI-driven innovation.",
+    category: "Morning Meeting"
+  }
+];
+
+// Specialized quiz questions (structured products)
+export const mockStructuredProductsQuestions: Question[] = [
+  {
+    id: 'sp1',
+    text: "Which typical payoff structure does a principal-protected note offer?",
+    options: [
+      { id: 'sp1a', text: "Guaranteed full return of principal with capped upside potential", isCorrect: true },
+      { id: 'sp1b', text: "Leveraged exposure with no downside protection", isCorrect: false },
+      { id: 'sp1c', text: "Unlimited upside with partial downside protection", isCorrect: false },
+      { id: 'sp1d', text: "Fixed coupon with call features", isCorrect: false }
+    ],
+    explanation: "Principal-protected notes typically offer full return of principal at maturity regardless of underlying performance, but with capped upside potential in exchange for this protection.",
+    category: "Structured Products"
+  },
+  {
+    id: 'sp2',
+    text: "What is the main risk associated with autocallable structured products?",
+    options: [
+      { id: 'sp2a', text: "Exchange rate risk", isCorrect: false },
+      { id: 'sp2b', text: "Liquidity risk", isCorrect: false },
+      { id: 'sp2c', text: "Interest rate risk", isCorrect: false },
+      { id: 'sp2d', text: "Early redemption before maximum potential return", isCorrect: true }
+    ],
+    explanation: "Autocallable structured products have the risk of being 'called' or redeemed early when certain market conditions are met, potentially limiting the investor's returns compared to staying invested for the full term.",
+    category: "Structured Products"
+  },
+  {
+    id: 'sp3',
+    text: "Which of the following best describes a reverse convertible structured product?",
+    options: [
+      { id: 'sp3a', text: "A product that converts from equity to fixed income exposure", isCorrect: false },
+      { id: 'sp3b', text: "A high-coupon debt instrument with potential conversion to equity at maturity", isCorrect: true },
+      { id: 'sp3c', text: "A product that provides leveraged returns on downward market movements", isCorrect: false },
+      { id: 'sp3d', text: "An inflation-protected treasury note", isCorrect: false }
+    ],
+    explanation: "A reverse convertible typically offers a high coupon rate in exchange for the investor taking on the risk that, at maturity, they might receive shares of the underlying asset instead of cash if the asset's price falls below a predetermined level.",
+    category: "Structured Products"
+  }
+];
+
+// Specialized quiz questions (estate planning)
+export const mockEstatePlanningQuestions: Question[] = [
+  {
+    id: 'ep1',
+    text: "Which type of trust is best for estate tax mitigation when transferring appreciating assets?",
+    options: [
+      { id: 'ep1a', text: "Revocable Living Trust", isCorrect: false },
+      { id: 'ep1b', text: "Charitable Remainder Trust", isCorrect: false },
+      { id: 'ep1c', text: "Intentionally Defective Grantor Trust (IDGT)", isCorrect: true },
+      { id: 'ep1d', text: "Qualified Personal Residence Trust", isCorrect: false }
+    ],
+    explanation: "An Intentionally Defective Grantor Trust (IDGT) allows the grantor to pay taxes on trust income while removing appreciating assets from their estate, making it especially effective for estate tax mitigation.",
+    category: "Estate Planning"
+  },
+  {
+    id: 'ep2',
+    text: "Under current law, what is the annual gift tax exclusion amount per recipient for 2023?",
+    options: [
+      { id: 'ep2a', text: "$10,000", isCorrect: false },
+      { id: 'ep2b', text: "$15,000", isCorrect: false },
+      { id: 'ep2c', text: "$17,000", isCorrect: true },
+      { id: 'ep2d', text: "$20,000", isCorrect: false }
+    ],
+    explanation: "The annual gift tax exclusion for 2023 is $17,000 per recipient, an increase from the previous $16,000 in 2022, allowing individuals to give up to this amount tax-free to any number of people each year.",
+    category: "Estate Planning"
+  },
+  {
+    id: 'ep3',
+    text: "Which of the following estate planning tools provides asset protection from creditors?",
+    options: [
+      { id: 'ep3a', text: "Will", isCorrect: false },
+      { id: 'ep3b', text: "Revocable Living Trust", isCorrect: false },
+      { id: 'ep3c', text: "Durable Power of Attorney", isCorrect: false },
+      { id: 'ep3d', text: "Domestic Asset Protection Trust", isCorrect: true }
+    ],
+    explanation: "A Domestic Asset Protection Trust (DAPT) is specifically designed to protect assets from future creditors while potentially allowing the grantor to remain a beneficiary, unlike revocable trusts which offer no creditor protection.",
+    category: "Estate Planning"
   }
 ];
 
@@ -146,6 +253,58 @@ export const mockBadges: BadgeInfo[] = [
     category: 'Participation',
     unlocked: false,
     progress: 15,
+  },
+  {
+    id: '10',
+    name: 'Morning Meeting Maven',
+    description: 'Complete 10 consecutive Morning Meeting challenges',
+    icon: 'https://img.icons8.com/fluency/48/conference-call.png',
+    category: 'Special Achievement',
+    unlocked: false,
+    progress: 60,
+  },
+  {
+    id: '11',
+    name: 'Structured Products Pro',
+    description: 'Score 100% on the Structured Products challenge',
+    icon: 'https://img.icons8.com/fluency/48/stocks-growth.png',
+    category: 'Subject Mastery',
+    unlocked: false,
+    progress: 33,
+  },
+  {
+    id: '12',
+    name: 'Estate Planning Expert',
+    description: 'Answer all Estate Planning questions correctly',
+    icon: 'https://img.icons8.com/fluency/48/will.png',
+    category: 'Subject Mastery',
+    unlocked: false,
+  }
+];
+
+// Mock specialized challenges data
+export const mockSpecializedChallenges = [
+  {
+    id: 'sp',
+    title: 'Structured Products',
+    description: 'Test your knowledge on structured investment products',
+    icon: 'https://img.icons8.com/fluency/48/stocks-growth.png',
+    questionCount: 3,
+    difficulty: 'Advanced',
+    estimatedTime: '5 min',
+    pointsReward: 100,
+    badgeReward: 'Structured Products Pro'
+  },
+  {
+    id: 'ep',
+    title: 'Advanced Estate Planning',
+    description: 'Challenge yourself on complex estate planning strategies',
+    icon: 'https://img.icons8.com/fluency/48/will.png',
+    questionCount: 3,
+    difficulty: 'Expert',
+    estimatedTime: '5 min',
+    pointsReward: 120,
+    badgeReward: 'Estate Planning Expert'
   }
 ];
 
@@ -153,39 +312,39 @@ export const mockBadges: BadgeInfo[] = [
 export const mockLeaderboardDaily = [
   {
     id: '1',
-    name: 'Morgan Warren',
-    avatar: 'https://ui-avatars.com/api/?name=Morgan+Warren&background=3b82f6&color=fff',
+    name: 'Paula Dolan',
+    avatar: 'https://ui-avatars.com/api/?name=Paula+Dolan&background=3b82f6&color=fff',
     position: 1,
+    points: 120,
+    streak: 9,
+    isCurrentUser: false
+  },
+  {
+    id: '2',
+    name: 'Karen Donnelly',
+    avatar: 'https://ui-avatars.com/api/?name=Karen+Donnelly&background=818cf8&color=fff',
+    position: 2,
+    points: 105,
+    streak: 6,
+    isCurrentUser: false
+  },
+  {
+    id: '3',
+    name: 'Dave Frame',
+    avatar: 'https://ui-avatars.com/api/?name=Dave+Frame&background=a78bfa&color=fff',
+    position: 3,
     points: 95,
     streak: 7,
     isCurrentUser: false
   },
   {
-    id: '2',
+    id: '4',
     name: 'Alex Chen',
     avatar: 'https://ui-avatars.com/api/?name=Alex+Chen&background=818cf8&color=fff',
-    position: 2,
+    position: 4,
     points: 90,
     streak: 5,
     isCurrentUser: true
-  },
-  {
-    id: '3',
-    name: 'Jordan Smith',
-    avatar: 'https://ui-avatars.com/api/?name=Jordan+Smith&background=a78bfa&color=fff',
-    position: 3,
-    points: 85,
-    streak: 4,
-    isCurrentUser: false
-  },
-  {
-    id: '4',
-    name: 'Taylor Rodriguez',
-    avatar: 'https://ui-avatars.com/api/?name=Taylor+Rodriguez&background=818cf8&color=fff',
-    position: 4,
-    points: 80,
-    streak: 3,
-    isCurrentUser: false
   },
   {
     id: '5',

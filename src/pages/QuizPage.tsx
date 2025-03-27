@@ -1,14 +1,24 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { QuizQuestion } from '../components/quiz/QuizQuestion';
 import { QuizResults } from '../components/quiz/QuizResults';
-import { mockQuestions } from '../data/mockData';
+import { MorningMeetingChallenge } from '../components/quiz/MorningMeetingChallenge';
+import { SpecializedChallenges } from '../components/quiz/SpecializedChallenges';
+import { 
+  mockQuestions, 
+  mockMorningMeetingQuestions, 
+  mockStructuredProductsQuestions,
+  mockEstatePlanningQuestions
+} from '../data/mockData';
 import { toast } from 'sonner';
 
 const QuizPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const quizType = searchParams.get('type') || 'daily';
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [correctAnswers, setCorrectAnswers] = useState<boolean[]>([]);
@@ -16,8 +26,25 @@ const QuizPage = () => {
   const [showResults, setShowResults] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
   const [earnedBadge, setEarnedBadge] = useState<{name: string, description: string} | null>(null);
+  const [showMorningMeetingPrompt, setShowMorningMeetingPrompt] = useState(false);
+  const [showSpecializedChallenges, setShowSpecializedChallenges] = useState(false);
   
-  const totalQuestions = mockQuestions.length;
+  // Get the appropriate questions based on quiz type
+  const getQuestions = () => {
+    switch(quizType) {
+      case 'morning-meeting':
+        return mockMorningMeetingQuestions;
+      case 'structured-products':
+        return mockStructuredProductsQuestions;
+      case 'estate-planning':
+        return mockEstatePlanningQuestions;
+      default:
+        return mockQuestions;
+    }
+  };
+  
+  const questions = getQuestions();
+  const totalQuestions = questions.length;
   
   useEffect(() => {
     // Simulate loading questions from API
@@ -26,7 +53,7 @@ const QuizPage = () => {
     return () => {
       // Cleanup if needed
     };
-  }, []);
+  }, [quizType]);
   
   const handleAnswer = (optionId: string, timeRemaining: number) => {
     const newAnswers = [...answers, optionId];
@@ -35,7 +62,7 @@ const QuizPage = () => {
     const newRemainingTimes = [...remainingTimes, timeRemaining];
     setRemainingTimes(newRemainingTimes);
     
-    const selectedOption = mockQuestions[currentQuestionIndex].options.find(
+    const selectedOption = questions[currentQuestionIndex].options.find(
       (option) => option.id === optionId
     );
     
@@ -50,7 +77,18 @@ const QuizPage = () => {
       } else {
         // Check if user earned a badge (simulation)
         const totalCorrect = [...newCorrectAnswers].filter(Boolean).length;
-        if (totalCorrect >= 4) {
+        
+        if (quizType === 'structured-products' && totalCorrect === totalQuestions) {
+          setEarnedBadge({
+            name: "Structured Products Pro",
+            description: "Score 100% on the Structured Products challenge"
+          });
+        } else if (quizType === 'estate-planning' && totalCorrect === totalQuestions) {
+          setEarnedBadge({
+            name: "Estate Planning Expert",
+            description: "Answer all Estate Planning questions correctly"
+          });
+        } else if (quizType === 'daily' && totalCorrect >= Math.floor(totalQuestions * 0.8)) {
           setEarnedBadge({
             name: "Quiz Master",
             description: "Score 80% or higher on a daily quiz"
@@ -59,12 +97,42 @@ const QuizPage = () => {
         
         // Calculate points
         const points = calculatePoints(newCorrectAnswers, newRemainingTimes);
-        toast.success(`Quiz completed! You earned ${points} points.`);
         
-        // Show results screen
-        setShowResults(true);
+        // For daily quiz, after completion prompt the morning meeting challenge
+        if (quizType === 'daily') {
+          toast.success(`Quiz completed! You earned ${points} points.`);
+          setShowResults(true);
+          
+          // Show Morning Meeting Challenge prompt after a delay
+          setTimeout(() => {
+            setShowMorningMeetingPrompt(true);
+          }, 1500);
+        } else {
+          toast.success(`${getQuizTypeName()} completed! You earned ${points} points.`);
+          setShowResults(true);
+          
+          // If completed morning meeting, show specialized challenges after a delay
+          if (quizType === 'morning-meeting') {
+            setTimeout(() => {
+              setShowSpecializedChallenges(true);
+            }, 1500);
+          }
+        }
       }
     }, 3000); // Wait for explanation screen
+  };
+  
+  const getQuizTypeName = () => {
+    switch(quizType) {
+      case 'morning-meeting':
+        return 'Morning Meeting Challenge';
+      case 'structured-products':
+        return 'Structured Products Challenge';
+      case 'estate-planning':
+        return 'Estate Planning Challenge';
+      default:
+        return 'Quiz';
+    }
   };
   
   const calculatePoints = (correctAnswers: boolean[], remainingTimes: number[]) => {
@@ -79,7 +147,44 @@ const QuizPage = () => {
       points += 25; // Perfect score bonus
     }
     
+    // Bonus points for special quizzes
+    if (quizType === 'morning-meeting') {
+      points += 30; // Morning meeting bonus
+    } else if (quizType === 'structured-products' || quizType === 'estate-planning') {
+      points += 50; // Specialized quiz bonus
+    }
+    
     return points;
+  };
+  
+  const handleAcceptMorningMeeting = () => {
+    setShowMorningMeetingPrompt(false);
+    setShowResults(false);
+    
+    // Reset all states for a new quiz
+    setCurrentQuestionIndex(0);
+    setAnswers([]);
+    setCorrectAnswers([]);
+    setRemainingTimes([]);
+    setEarnedBadge(null);
+    
+    // Change the quiz type
+    setSearchParams({ type: 'morning-meeting' });
+  };
+  
+  const handleSelectChallenge = (challengeId: string) => {
+    setShowSpecializedChallenges(false);
+    setShowResults(false);
+    
+    // Reset all states for a new quiz
+    setCurrentQuestionIndex(0);
+    setAnswers([]);
+    setCorrectAnswers([]);
+    setRemainingTimes([]);
+    setEarnedBadge(null);
+    
+    // Change the quiz type based on selected challenge
+    setSearchParams({ type: challengeId });
   };
   
   if (!quizStarted) {
@@ -104,6 +209,17 @@ const QuizPage = () => {
             ← Back to Home
           </button>
           
+          {quizType !== 'daily' && (
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold">{getQuizTypeName()}</h1>
+              <p className="text-muted-foreground">
+                {quizType === 'morning-meeting' 
+                  ? "Test your knowledge from today's morning meeting discussion"
+                  : "Demonstrate your specialized knowledge and earn bonus points"}
+              </p>
+            </div>
+          )}
+          
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestionIndex}
@@ -114,7 +230,7 @@ const QuizPage = () => {
               className="flex-1"
             >
               <QuizQuestion
-                question={mockQuestions[currentQuestionIndex]}
+                question={questions[currentQuestionIndex]}
                 questionNumber={currentQuestionIndex + 1}
                 totalQuestions={totalQuestions}
                 onAnswer={handleAnswer}
@@ -131,9 +247,22 @@ const QuizPage = () => {
             points={calculatePoints(correctAnswers, remainingTimes)}
             streakDays={5} // This would come from user data in a real app
             badgeEarned={earnedBadge}
+            quizType={quizType}
           />
+          
+          {showSpecializedChallenges && (
+            <SpecializedChallenges onSelectChallenge={handleSelectChallenge} />
+          )}
         </div>
       )}
+      
+      {/* Morning Meeting Challenge Modal */}
+      <MorningMeetingChallenge 
+        isOpen={showMorningMeetingPrompt}
+        onClose={() => setShowMorningMeetingPrompt(false)}
+        onAccept={handleAcceptMorningMeeting}
+        questionCount={mockMorningMeetingQuestions.length}
+      />
     </div>
   );
 };
