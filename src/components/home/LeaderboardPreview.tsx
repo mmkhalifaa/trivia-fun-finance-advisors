@@ -24,27 +24,27 @@ export const LeaderboardPreview = () => {
       const mockLeaders = [
         {
           id: '1',
-          name: 'Morgan Warren',
+          name: 'Paula Dolan',
           position: 1,
-          avatar: 'https://ui-avatars.com/api/?name=Morgan+Warren&background=3b82f6&color=fff',
+          avatar: 'https://ui-avatars.com/api/?name=Paula+Dolan&background=3b82f6&color=fff',
           points: 750,
           isCurrentUser: false
         },
         {
           id: '2',
-          name: 'Alex Chen',
+          name: 'Karen Donnelly',
           position: 2,
-          avatar: 'https://ui-avatars.com/api/?name=Alex+Chen&background=818cf8&color=fff',
+          avatar: 'https://ui-avatars.com/api/?name=Karen+Donnelly&background=818cf8&color=fff',
           points: 720,
-          isCurrentUser: true
+          isCurrentUser: false
         },
         {
           id: '3',
-          name: 'Jordan Smith',
+          name: 'Dave Frame',
           position: 3,
-          avatar: 'https://ui-avatars.com/api/?name=Jordan+Smith&background=a78bfa&color=fff',
+          avatar: 'https://ui-avatars.com/api/?name=Dave+Frame&background=a78bfa&color=fff',
           points: 695,
-          isCurrentUser: false
+          isCurrentUser: true
         }
       ];
       
