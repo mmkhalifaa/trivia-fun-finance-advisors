@@ -2,12 +2,11 @@
 import { useAuth } from '../../context/AuthContext';
 import { Link, NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LoginModal } from '../login/LoginModal';
 import { Home, Award, BarChart3, User, BookOpen, Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export const Header = () => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
@@ -58,8 +57,8 @@ export const Header = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          {user ? (
-            <>
+          {user && (
+            <div className="flex items-center gap-2">
               <div className="hidden md:block text-sm mr-2">
                 <span className="font-medium">{user.name}</span>
                 {isAdmin && <span className="ml-1 text-muted-foreground">(Admin)</span>}
@@ -68,16 +67,11 @@ export const Header = () => {
                 <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
                   <span className="sr-only">Profile</span>
                   <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
-                    {user.name.charAt(0)}
+                    {user.name?.charAt(0) || 'U'}
                   </div>
                 </Button>
               </Link>
-              <Button variant="outline" size="sm" onClick={logout}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <LoginModal />
+            </div>
           )}
         </div>
       </div>
