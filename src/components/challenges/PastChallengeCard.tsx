@@ -17,6 +17,7 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from '../ui/chart';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 
 // Chart imports
 import {
@@ -111,15 +112,12 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
   
   const chartColors = ['#10b981', '#f43f5e']; // Green for correct, red for incorrect
 
-  const handleQuestionSelect = (index: number) => {
-    setSelectedQuestionIndex(selectedQuestionIndex === index ? null : index);
-  };
-
   return (
     <Card className={cn(
       "overflow-hidden transition-all duration-300",
       expanded ? "shadow-md" : "hover:shadow-sm"
     )}>
+      {/* Card Header - Always visible */}
       <div 
         className="p-6 flex gap-4 cursor-pointer"
         onClick={toggleExpanded}
@@ -172,6 +170,7 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
         </div>
       </div>
       
+      {/* Expanded Content */}
       {expanded && (
         <div className="px-6 pb-6">
           <hr className="mb-6" />
@@ -188,26 +187,28 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
                     incorrect: { color: chartColors[1] }
                   }}
                 >
-                  <PieChart>
-                    <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      innerRadius="60%"
-                      outerRadius="80%"
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {chartData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={chartColors[index % chartColors.length]} 
-                        />
-                      ))}
-                    </Pie>
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                  </PieChart>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        innerRadius="60%"
+                        outerRadius="80%"
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={chartColors[index % chartColors.length]} 
+                          />
+                        ))}
+                      </Pie>
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </ChartContainer>
               </div>
               
@@ -253,7 +254,7 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
                     </div>
                     <span className="text-sm font-bold">{challenge.pointsEarned}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">earned</p>
+                  <p className="text-xs text-muted-foreground">questions</p>
                 </div>
               </div>
             </div>
@@ -262,104 +263,112 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
             <div className="col-span-1 md:col-span-2">
               <h4 className="font-semibold text-sm mb-4">Questions & Answers</h4>
               
-              <div className="max-h-96 overflow-y-auto pr-2">
-                <div className="space-y-4">
-                  {challenge.questions.map((q, i) => (
-                    <div 
-                      key={i}
-                      className={cn(
-                        "border rounded-lg overflow-hidden transition-all",
-                        q.isCorrect ? "border-green-200" : "border-red-200",
-                        selectedQuestionIndex === i ? "shadow-sm" : ""
-                      )}
-                    >
-                      <div 
-                        className={cn(
-                          "p-4 flex justify-between items-center cursor-pointer",
-                          q.isCorrect ? "bg-green-50" : "bg-red-50"
-                        )}
-                        onClick={() => handleQuestionSelect(i)}
-                      >
+              <div className="space-y-4 max-h-96 overflow-y-auto pr-1">
+                {challenge.questions.map((question, index) => (
+                  <Collapsible
+                    key={index}
+                    className={cn(
+                      "rounded-lg overflow-hidden border shadow-sm transition-all",
+                      question.isCorrect ? "border-green-200" : "border-red-200"
+                    )}
+                  >
+                    <CollapsibleTrigger className="w-full text-left">
+                      <div className={cn(
+                        "p-4 flex items-center justify-between",
+                        question.isCorrect ? "bg-green-50/50" : "bg-red-50/50"
+                      )}>
                         <div className="flex items-center gap-3">
                           <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                            q.isCorrect ? "bg-green-100" : "bg-red-100"
+                            "w-8 h-8 rounded-full flex items-center justify-center",
+                            question.isCorrect ? "bg-green-100" : "bg-red-100"
                           )}>
-                            <span className="font-semibold text-sm">{i + 1}</span>
+                            <span className="font-semibold text-sm">{index + 1}</span>
                           </div>
-                          <div className="flex-1 mr-4">
-                            <p className="font-medium text-sm line-clamp-2">{q.question}</p>
-                          </div>
+                          <p className="font-medium text-sm line-clamp-1 flex-1 mr-2">{question.question}</p>
                         </div>
                         
-                        <div className="flex items-center gap-2">
-                          <div className={cn(
-                            "p-1.5 rounded-full",
-                            q.isCorrect ? "bg-green-100" : "bg-red-100"
-                          )}>
-                            {q.isCorrect ? (
-                              <Check className="w-4 h-4 text-green-600" />
-                            ) : (
-                              <X className="w-4 h-4 text-red-600" />
-                            )}
-                          </div>
-                          {selectedQuestionIndex === i ? (
-                            <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {question.isCorrect ? (
+                            <div className="flex items-center gap-1 text-green-600 px-2 py-0.5 bg-green-100 rounded-full">
+                              <Check className="h-3.5 w-3.5" />
+                              <span className="text-xs font-medium">Correct</span>
+                            </div>
                           ) : (
-                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                            <div className="flex items-center gap-1 text-red-600 px-2 py-0.5 bg-red-100 rounded-full">
+                              <X className="h-3.5 w-3.5" />
+                              <span className="text-xs font-medium">Incorrect</span>
+                            </div>
                           )}
+                          <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform ui-expanded:rotate-180" />
                         </div>
                       </div>
-                      
-                      {selectedQuestionIndex === i && (
-                        <div className="p-4 bg-background border-t border-gray-100">
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-1 gap-4">
-                              <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <div className="p-1 rounded-full bg-green-100">
-                                    <Check className="w-3.5 h-3.5 text-green-600" />
-                                  </div>
-                                  <span className="text-xs font-semibold text-green-700">Correct Answer</span>
-                                </div>
-                                <div className="ml-7 p-3 bg-green-50 rounded-md text-sm">
-                                  {q.correctAnswer}
-                                </div>
+                    </CollapsibleTrigger>
+                    
+                    <CollapsibleContent>
+                      <div className="p-4 bg-white border-t border-muted">
+                        <div className="grid gap-6">
+                          {/* Correct Answer */}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <h5 className="text-sm font-semibold">Correct Answer:</h5>
+                            </div>
+                            <div className={cn(
+                              "p-4 rounded-lg bg-green-50 border border-green-100",
+                              "flex items-start gap-3"
+                            )}>
+                              <div className="bg-green-100 text-green-700 p-1.5 rounded-full flex-shrink-0 mt-0.5">
+                                <Check className="h-4 w-4" />
                               </div>
-                              
-                              <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <div className={cn(
-                                    "p-1 rounded-full",
-                                    q.isCorrect ? "bg-green-100" : "bg-red-100"
-                                  )}>
-                                    {q.isCorrect ? (
-                                      <Check className="w-3.5 h-3.5 text-green-600" />
-                                    ) : (
-                                      <X className="w-3.5 h-3.5 text-red-600" />
-                                    )}
-                                  </div>
-                                  <span className={cn(
-                                    "text-xs font-semibold",
-                                    q.isCorrect ? "text-green-700" : "text-red-700"
-                                  )}>
-                                    Your Answer
-                                  </span>
-                                </div>
-                                <div className={cn(
-                                  "ml-7 p-3 rounded-md text-sm",
-                                  q.isCorrect ? "bg-green-50" : "bg-red-50"
+                              <div>
+                                <p className="text-sm text-green-800">{question.correctAnswer}</p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* User Answer */}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <h5 className="text-sm font-semibold">Your Answer:</h5>
+                            </div>
+                            <div className={cn(
+                              "p-4 rounded-lg border flex items-start gap-3",
+                              question.isCorrect 
+                                ? "bg-green-50 border-green-100" 
+                                : "bg-red-50 border-red-100"
+                            )}>
+                              <div className={cn(
+                                "p-1.5 rounded-full flex-shrink-0 mt-0.5",
+                                question.isCorrect 
+                                  ? "bg-green-100 text-green-700" 
+                                  : "bg-red-100 text-red-700"
+                              )}>
+                                {question.isCorrect ? (
+                                  <Check className="h-4 w-4" />
+                                ) : (
+                                  <X className="h-4 w-4" />
+                                )}
+                              </div>
+                              <div>
+                                <p className={cn(
+                                  "text-sm",
+                                  question.isCorrect ? "text-green-800" : "text-red-800"
                                 )}>
-                                  {q.userAnswer}
-                                </div>
+                                  {question.userAnswer}
+                                </p>
+                                
+                                {!question.isCorrect && (
+                                  <div className="mt-2 p-2 bg-white/80 border border-red-100 rounded text-xs text-red-600">
+                                    Your answer was incorrect. The correct answer is shown above.
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ))}
               </div>
             </div>
           </div>
