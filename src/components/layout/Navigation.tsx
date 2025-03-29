@@ -1,12 +1,14 @@
 
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Award, BarChart3, User, BookOpen } from 'lucide-react';
+import { Home, Award, BarChart3, User, BookOpen, Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useAuth } from '../../context/AuthContext';
 
 export const Navigation = () => {
   const [mounted, setMounted] = useState(false);
   const location = useLocation();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     setMounted(true);
@@ -19,6 +21,11 @@ export const Navigation = () => {
     { path: '/badges', label: 'Badges', icon: Award },
     { path: '/profile', label: 'Profile', icon: User },
   ];
+  
+  // Only show admin link to users with admin role
+  if (isAdmin) {
+    navItems.push({ path: '/admin', label: 'Admin', icon: Settings });
+  }
 
   if (!mounted) return null;
 
