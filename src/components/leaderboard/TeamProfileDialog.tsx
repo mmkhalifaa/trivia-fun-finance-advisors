@@ -2,6 +2,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { 
   Trophy, 
   Users, 
@@ -38,6 +40,7 @@ interface TeamProfileDialogProps {
 
 export const TeamProfileDialog = ({ open, onOpenChange, team }: TeamProfileDialogProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const isMobile = useIsMobile();
   
   if (!team) return null;
   
@@ -59,124 +62,141 @@ export const TeamProfileDialog = ({ open, onOpenChange, team }: TeamProfileDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className={`${isMobile ? 'px-3 py-4' : 'sm:max-w-xl'} overflow-hidden`}>
+        <DialogHeader className="space-y-1">
           <DialogTitle>Market/Team Profile</DialogTitle>
         </DialogHeader>
         
-        <div className="flex flex-col items-center pt-4">
-          <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <Building className="w-12 h-12 text-primary" />
-          </div>
-          
-          <h2 className="text-xl font-bold">{team.name}</h2>
-          {team.isUserTeam && (
-            <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full mt-1">
-              Your Team
-            </span>
-          )}
-          
-          <div className="flex items-center gap-4 mt-4">
-            <div className="flex flex-col items-center">
-              <div className="flex items-center gap-1 text-amber-500">
-                <Trophy className="w-4 h-4" />
-                <span className="font-semibold">#{team.position}</span>
-              </div>
-              <span className="text-xs text-muted-foreground">Rank</span>
-            </div>
-            
-            <div className="flex flex-col items-center">
-              <div className="flex items-center gap-1 text-primary">
-                <Star className="w-4 h-4" />
-                <span className="font-semibold">{team.points.toLocaleString()}</span>
-              </div>
-              <span className="text-xs text-muted-foreground">Points</span>
-            </div>
-            
-            <div className="flex flex-col items-center">
-              <div className="flex items-center gap-1 text-indigo-500">
-                <Users className="w-4 h-4" />
-                <span className="font-semibold">{team.members}</span>
-              </div>
-              <span className="text-xs text-muted-foreground">Members</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mt-4">
-          <h3 className="text-sm font-semibold flex items-center gap-2 mb-3">
-            <TrendingUp className="w-4 h-4" /> Performance Insights
-          </h3>
-          <Card>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col items-center bg-muted/50 rounded-lg p-3">
-                  <span className="text-sm text-muted-foreground">Avg. Points</span>
-                  <span className="text-lg font-medium">
-                    {Math.round(team.points / team.members).toLocaleString()}
+        <ScrollArea className="max-h-[80vh]">
+          <div className="px-1">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-6 pt-2">
+              {/* Team icon and basic info */}
+              <div className="flex flex-col items-center">
+                <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Building className="w-12 h-12 text-primary" />
+                </div>
+                
+                <h2 className="text-xl font-bold mt-3">{team.name}</h2>
+                {team.isUserTeam && (
+                  <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full mt-1">
+                    Your Team
                   </span>
-                </div>
-                <div className="flex flex-col items-center bg-muted/50 rounded-lg p-3">
-                  <span className="text-sm text-muted-foreground">Weekly Growth</span>
-                  <span className="text-lg font-medium">+{Math.round(Math.random() * 15)}%</span>
+                )}
+                
+                <div className="flex items-center gap-4 mt-4">
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-1 text-amber-500">
+                      <Trophy className="w-4 h-4" />
+                      <span className="font-semibold">#{team.position}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">Rank</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-1 text-primary">
+                      <Star className="w-4 h-4" />
+                      <span className="font-semibold">{team.points.toLocaleString()}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">Points</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-1 text-indigo-500">
+                      <Users className="w-4 h-4" />
+                      <span className="font-semibold">{team.members}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">Members</span>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="mt-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold flex items-center gap-2">
-              <Users className="w-4 h-4" /> Team Members
-            </h3>
-            <span className="text-xs text-muted-foreground">{team.members} members</span>
-          </div>
-          
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search members..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          
-          <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-            {filteredMembers.length > 0 ? (
-              filteredMembers.map((member, index) => (
-                <div key={member.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/60 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={member.avatar} alt={member.name} />
-                      <AvatarFallback>{member.name.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium">{member.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">
-                      {member.points.toLocaleString()} pts
-                    </span>
-                    {index < 3 && (
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${
-                        index === 0 ? "bg-amber-100 text-amber-800" :
-                        index === 1 ? "bg-slate-100 text-slate-800" :
-                        "bg-amber-900/20 text-amber-800"
-                      }`}>
-                        #{index + 1}
-                      </span>
+              
+              {/* Performance insights */}
+              <div className="flex-1 w-full">
+                <h3 className="text-sm font-semibold flex items-center gap-2 mb-3">
+                  <TrendingUp className="w-4 h-4" /> Performance Insights
+                </h3>
+                <Card className="border border-border">
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="flex flex-col items-center bg-muted/50 rounded-lg p-3">
+                        <span className="text-sm text-muted-foreground">Avg. Points</span>
+                        <span className="text-lg font-medium">
+                          {Math.round(team.points / team.members).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center bg-muted/50 rounded-lg p-3">
+                        <span className="text-sm text-muted-foreground">Weekly Growth</span>
+                        <span className="text-lg font-medium">+{Math.round(Math.random() * 15)}%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            
+            {/* Team Members section */}
+            <div className="mt-6 mb-2">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold flex items-center gap-2">
+                  <Users className="w-4 h-4" /> Team Members
+                </h3>
+                <span className="text-xs text-muted-foreground">{team.members} members</span>
+              </div>
+              
+              {/* Search input */}
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search members..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              
+              {/* Members list */}
+              <Card className="border border-border">
+                <CardContent className="p-1">
+                  <div className="space-y-1 max-h-60 overflow-y-auto pr-1">
+                    {filteredMembers.length > 0 ? (
+                      filteredMembers.map((member, index) => (
+                        <div key={member.id} 
+                          className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={member.avatar} alt={member.name} />
+                              <AvatarFallback>{member.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-medium">{member.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {member.points.toLocaleString()} pts
+                            </span>
+                            {index < 3 && (
+                              <span className={`text-xs px-1.5 py-0.5 rounded ${
+                                index === 0 ? "bg-amber-100 text-amber-800" :
+                                index === 1 ? "bg-slate-100 text-slate-800" :
+                                "bg-amber-900/20 text-amber-800"
+                              }`}>
+                                #{index + 1}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-6 text-sm text-muted-foreground">
+                        No members found matching "{searchQuery}"
+                      </div>
                     )}
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-6 text-sm text-muted-foreground">
-                No members found matching "{searchQuery}"
-              </div>
-            )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
