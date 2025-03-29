@@ -23,6 +23,7 @@ interface QuizResultsProps {
     description: string;
   } | null;
   quizType?: string;
+  sourceURL?: string;
 }
 
 export const QuizResults = ({
@@ -33,6 +34,7 @@ export const QuizResults = ({
   showConfetti = true,
   badgeEarned = null,
   quizType = 'daily',
+  sourceURL = '/',
 }: QuizResultsProps) => {
   const stats: ResultStat[] = [
     {
@@ -66,6 +68,11 @@ export const QuizResults = ({
         return "Daily Quiz";
     }
   };
+
+  // Determine if we're coming from the challenges page
+  const isFromChallenge = quizType !== 'daily' || sourceURL.includes('challenges');
+  const backLinkText = isFromChallenge ? "Back to Challenges" : "Back to Home";
+  const backLinkURL = isFromChallenge ? "/challenges" : "/";
   
   return (
     <div className="max-w-md mx-auto text-center">
@@ -141,7 +148,7 @@ export const QuizResults = ({
           </Link>
           
           <Link 
-            to="/" 
+            to={backLinkURL}
             className={cn(
               "dashboard-card p-4 flex items-center justify-between w-full",
               "button-effect hover:border-primary/50"
@@ -151,7 +158,7 @@ export const QuizResults = ({
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Award className="w-5 h-5 text-primary" />
               </div>
-              <span className="font-medium">Back to Home</span>
+              <span className="font-medium">{backLinkText}</span>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </Link>
