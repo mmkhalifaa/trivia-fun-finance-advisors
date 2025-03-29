@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Award, BarChart3, User, BookOpen, Settings } from 'lucide-react';
+import { Home, Award, BarChart3, BookOpen, Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export const Navigation = () => {
@@ -17,7 +17,6 @@ export const Navigation = () => {
     { path: '/challenges', label: 'Challenges', icon: BookOpen },
     { path: '/leaderboard', label: 'Leaderboard', icon: BarChart3 },
     { path: '/badges', label: 'Badges', icon: Award },
-    { path: '/profile', label: 'Profile', icon: User },
     { path: '/admin', label: 'Admin', icon: Settings }, // Always show admin tab
   ];
 
