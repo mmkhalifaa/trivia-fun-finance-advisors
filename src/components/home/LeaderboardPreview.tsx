@@ -5,6 +5,8 @@ import { ArrowRight, Medal, Trophy, Users } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ScaleIn } from '../shared/Transitions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { UserProfileDialog } from '../leaderboard/UserProfileDialog';
+import { TeamProfileDialog } from '../leaderboard/TeamProfileDialog';
 
 interface LeaderboardEntry {
   id: string;
@@ -27,6 +29,10 @@ interface TeamLeaderboardEntry {
 export const LeaderboardPreview = () => {
   const [leaders, setLeaders] = useState<LeaderboardEntry[]>([]);
   const [teamLeaders, setTeamLeaders] = useState<TeamLeaderboardEntry[]>([]);
+  const [selectedUser, setSelectedUser] = useState<LeaderboardEntry | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<TeamLeaderboardEntry | null>(null);
+  const [userProfileOpen, setUserProfileOpen] = useState(false);
+  const [teamProfileOpen, setTeamProfileOpen] = useState(false);
   
   // Simulate fetching leaderboard data
   useEffect(() => {
@@ -95,6 +101,16 @@ export const LeaderboardPreview = () => {
     fetchLeaderboard();
   }, []);
   
+  const handleUserClick = (user: LeaderboardEntry) => {
+    setSelectedUser(user);
+    setUserProfileOpen(true);
+  };
+  
+  const handleTeamClick = (team: TeamLeaderboardEntry) => {
+    setSelectedTeam(team);
+    setTeamProfileOpen(true);
+  };
+  
   return (
     <ScaleIn delay={0.2}>
       <div>
@@ -121,10 +137,11 @@ export const LeaderboardPreview = () => {
                   <div 
                     key={leader.id}
                     className={cn(
-                      "flex items-center justify-between py-3",
+                      "flex items-center justify-between py-3 cursor-pointer hover:bg-muted/50 rounded-md transition-colors",
                       index < leaders.length - 1 ? "border-b border-border" : "",
                       leader.isCurrentUser ? "bg-primary/5 -mx-5 px-5 rounded-md" : ""
                     )}
+                    onClick={() => handleUserClick(leader)}
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-9 relative">
@@ -177,10 +194,11 @@ export const LeaderboardPreview = () => {
                   <div 
                     key={team.id}
                     className={cn(
-                      "flex items-center justify-between py-3",
+                      "flex items-center justify-between py-3 cursor-pointer hover:bg-muted/50 rounded-md transition-colors",
                       index < teamLeaders.length - 1 ? "border-b border-border" : "",
                       team.isUserTeam ? "bg-primary/5 -mx-5 px-5 rounded-md" : ""
                     )}
+                    onClick={() => handleTeamClick(team)}
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-9 relative">
@@ -227,6 +245,20 @@ export const LeaderboardPreview = () => {
             </TabsContent>
           </Tabs>
         </div>
+        
+        {/* User Profile Dialog */}
+        <UserProfileDialog 
+          open={userProfileOpen} 
+          onOpenChange={setUserProfileOpen} 
+          user={selectedUser as any} 
+        />
+        
+        {/* Team Profile Dialog */}
+        <TeamProfileDialog 
+          open={teamProfileOpen} 
+          onOpenChange={setTeamProfileOpen} 
+          team={selectedTeam} 
+        />
       </div>
     </ScaleIn>
   );

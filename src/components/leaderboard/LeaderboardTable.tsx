@@ -2,6 +2,8 @@
 import { useMemo, useState } from 'react';
 import { Medal, Search, Trophy, Users } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { UserProfileDialog } from './UserProfileDialog';
+import { TeamProfileDialog } from './TeamProfileDialog';
 
 interface LeaderboardUser {
   id: string;
@@ -31,6 +33,10 @@ interface LeaderboardTableProps {
 
 export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<TeamLeaderboardEntry | null>(null);
+  const [userProfileOpen, setUserProfileOpen] = useState(false);
+  const [teamProfileOpen, setTeamProfileOpen] = useState(false);
   
   const filteredData = useMemo(() => {
     if (!searchQuery.trim()) return data;
@@ -45,6 +51,16 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
       case 'daily': return "Today's";
       case 'weekly': return "This Week's";
       case 'allTime': return "All-Time";
+    }
+  };
+
+  const handleRowClick = (item: LeaderboardUser | TeamLeaderboardEntry) => {
+    if (type === 'individuals') {
+      setSelectedUser(item as LeaderboardUser);
+      setUserProfileOpen(true);
+    } else {
+      setSelectedTeam(item as TeamLeaderboardEntry);
+      setTeamProfileOpen(true);
     }
   };
 
@@ -90,9 +106,10 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
                   <tr 
                     key={item.id}
                     className={cn(
-                      "transition-all duration-200",
+                      "transition-all duration-200 cursor-pointer hover:bg-muted/50",
                       isUser ? "bg-primary/5 rounded-lg" : ""
                     )}
+                    onClick={() => handleRowClick(item)}
                   >
                     <td className="px-4 py-3 align-middle">
                       <div className="flex items-center">
@@ -183,6 +200,20 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
           </tbody>
         </table>
       </div>
+      
+      {/* User Profile Dialog */}
+      <UserProfileDialog 
+        open={userProfileOpen} 
+        onOpenChange={setUserProfileOpen} 
+        user={selectedUser} 
+      />
+      
+      {/* Team Profile Dialog */}
+      <TeamProfileDialog 
+        open={teamProfileOpen} 
+        onOpenChange={setTeamProfileOpen} 
+        team={selectedTeam} 
+      />
     </div>
   );
 };
