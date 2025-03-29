@@ -25,9 +25,38 @@ export const Header = () => {
   return (
     <header className="w-full bg-white border-b border-border sticky top-0 z-10">
       <div className="container max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="font-bold text-xl text-primary">QuizMaster</Link>
+        <div className="flex items-center">
+          <Link to="/" className="font-bold text-xl text-primary mr-8">PB Trivia</Link>
+          
+          {/* Navigation tabs - now at the same level as the title */}
+          <div className="hidden md:flex items-center">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) => 
+                  cn(
+                    "flex items-center justify-center px-4 h-full transition-all duration-300 relative",
+                    isActive 
+                      ? "text-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <item.icon className="w-4 h-4 mr-2" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                    {isActive && (
+                      <div className="absolute bottom-0 w-full h-0.5 bg-primary" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </div>
         </div>
+        
         <div className="flex items-center gap-2">
           {user ? (
             <>
@@ -53,17 +82,17 @@ export const Header = () => {
         </div>
       </div>
       
-      {/* Navigation tabs */}
-      <div className="border-t border-border bg-white">
+      {/* Mobile navigation - show tabs on smaller screens */}
+      <div className="md:hidden border-t border-border bg-white">
         <div className="container max-w-5xl mx-auto">
-          <div className="flex items-center h-12">
+          <div className="flex items-center h-12 overflow-x-auto">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) => 
                   cn(
-                    "flex items-center justify-center px-4 h-full transition-all duration-300 relative",
+                    "flex items-center justify-center px-4 h-full transition-all duration-300 relative flex-shrink-0",
                     isActive 
                       ? "text-primary" 
                       : "text-muted-foreground hover:text-foreground"
