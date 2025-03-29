@@ -30,7 +30,8 @@ export const AdminLayout = () => {
   
   const handleLogout = () => {
     logoutAdmin();
-    // Stay on the same page, which will now show the admin login form
+    // Redirect to homepage after logout
+    navigate('/');
   };
   
   const isActive = (path: string, exact = false) => {

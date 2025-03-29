@@ -1,5 +1,8 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
 
 // Simplified user model - in a real app, this would be more complex
 interface User {
@@ -146,6 +149,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const { loginAdmin } = useAuth();
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,11 +160,26 @@ const AdminLogin = () => {
     }
   };
 
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-4 text-center">Admin Access Required</h1>
-        <p className="text-muted-foreground mb-6 text-center">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold">Admin Access Required</h1>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleBackToHome}
+            className="flex items-center gap-1"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Back to Home</span>
+          </Button>
+        </div>
+        <p className="text-muted-foreground mb-6">
           Enter your admin password to access this area.
         </p>
         
