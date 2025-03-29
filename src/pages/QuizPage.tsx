@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -33,7 +32,7 @@ interface QuizSession {
 
 // Store active quiz sessions in localStorage with a prefix for easy identification
 const QUIZ_SESSION_PREFIX = 'quiz_session_';
-const DEFAULT_QUIZ_TIME_LIMIT = 10 * 60; // 10 minutes in seconds
+const DEFAULT_QUIZ_TIME_LIMIT = 3 * 60; // 3 minutes in seconds
 
 const QuizPage = () => {
   const navigate = useNavigate();
