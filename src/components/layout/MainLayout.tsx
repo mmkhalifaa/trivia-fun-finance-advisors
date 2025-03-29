@@ -1,6 +1,5 @@
 
 import { ReactNode } from 'react';
-import { Navigation } from './Navigation';
 import { Header } from './Header';
 
 interface MainLayoutProps {
@@ -16,7 +15,6 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           {children}
         </div>
       </main>
-      <Navigation />
     </div>
   );
 };
