@@ -10,7 +10,12 @@ import {
   mockQuestions, 
   mockMorningMeetingQuestions, 
   mockStructuredProductsQuestions,
-  mockEstatePlanningQuestions
+  mockEstatePlanningQuestions,
+  mockCurrentAffairsQuestions,
+  mockPrivateEquityQuestions,
+  mockRetirementPlanningQuestions,
+  mockEconomicTheoryQuestions,
+  mockFinancialHistoryQuestions
 } from '../data/mockData';
 import { toast } from 'sonner';
 
@@ -38,6 +43,21 @@ const QuizPage = () => {
         return mockStructuredProductsQuestions;
       case 'estate-planning':
         return mockEstatePlanningQuestions;
+      case 'current-affairs-1':
+      case 'current-affairs-2':
+        return mockCurrentAffairsQuestions;
+      case 'finance-1':
+        return mockPrivateEquityQuestions;
+      case 'finance-2':
+        return mockStructuredProductsQuestions;
+      case 'planning-1':
+        return mockRetirementPlanningQuestions;
+      case 'planning-2':
+        return mockEstatePlanningQuestions;
+      case 'general-1':
+        return mockFinancialHistoryQuestions;
+      case 'general-2':
+        return mockEconomicTheoryQuestions;
       default:
         return mockQuestions;
     }
@@ -130,6 +150,22 @@ const QuizPage = () => {
         return 'Structured Products Challenge';
       case 'estate-planning':
         return 'Estate Planning Challenge';
+      case 'current-affairs-1':
+        return 'Market Trends 2023';
+      case 'current-affairs-2':
+        return 'Global Economic Summit';
+      case 'finance-1':
+        return 'Private Equity Fundamentals';
+      case 'finance-2':
+        return 'Structured Products Deep Dive';
+      case 'planning-1':
+        return 'Retirement Planning Essentials';
+      case 'planning-2':
+        return 'Estate Planning Strategies';
+      case 'general-1':
+        return 'Financial History';
+      case 'general-2':
+        return 'Economic Theory';
       default:
         return 'Quiz';
     }

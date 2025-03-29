@@ -173,6 +173,208 @@ export const mockEstatePlanningQuestions: Question[] = [
   }
 ];
 
+// Adding new question sets to match the challenge categories
+
+// Current Affairs questions
+export const mockCurrentAffairsQuestions: Question[] = [
+  {
+    id: 'ca1',
+    text: "Which recent economic indicator has most significantly impacted global markets?",
+    options: [
+      { id: 'ca1a', text: "CPI inflation data", isCorrect: true },
+      { id: 'ca1b', text: "Manufacturing PMI", isCorrect: false },
+      { id: 'ca1c', text: "Retail sales figures", isCorrect: false },
+      { id: 'ca1d', text: "Housing starts", isCorrect: false }
+    ],
+    explanation: "Recent CPI inflation data has been the primary driver of market reactions, as it directly influences central bank policy decisions on interest rates.",
+    category: "Current Affairs"
+  },
+  {
+    id: 'ca2',
+    text: "What was the main outcome of the recent G20 economic summit?",
+    options: [
+      { id: 'ca2a', text: "Agreement on global minimum corporate tax", isCorrect: false },
+      { id: 'ca2b', text: "New climate finance commitments", isCorrect: true },
+      { id: 'ca2c', text: "Tariff reductions between major economies", isCorrect: false },
+      { id: 'ca2d', text: "Digital currency regulations", isCorrect: false }
+    ],
+    explanation: "The summit resulted in significant new climate finance commitments from developed nations to support emerging economies in their green transition efforts.",
+    category: "Current Affairs"
+  },
+  {
+    id: 'ca3',
+    text: "Which geopolitical event is currently having the largest impact on energy markets?",
+    options: [
+      { id: 'ca3a', text: "Middle East tensions", isCorrect: true },
+      { id: 'ca3b', text: "European Union policy changes", isCorrect: false },
+      { id: 'ca3c', text: "Asian Pacific trade negotiations", isCorrect: false },
+      { id: 'ca3d', text: "North American production agreements", isCorrect: false }
+    ],
+    explanation: "Ongoing tensions in the Middle East have created supply uncertainties and risk premiums in global energy markets, particularly affecting oil prices.",
+    category: "Current Affairs"
+  }
+];
+
+// Private Equity questions
+export const mockPrivateEquityQuestions: Question[] = [
+  {
+    id: 'pe1',
+    text: "What is the typical investment horizon for a traditional private equity fund?",
+    options: [
+      { id: 'pe1a', text: "1-3 years", isCorrect: false },
+      { id: 'pe1b', text: "3-5 years", isCorrect: false },
+      { id: 'pe1c', text: "5-10 years", isCorrect: true },
+      { id: 'pe1d', text: "10-15 years", isCorrect: false }
+    ],
+    explanation: "Traditional private equity funds typically have an investment horizon of 5-10 years, allowing sufficient time for operational improvements and value creation before exit.",
+    category: "Finance"
+  },
+  {
+    id: 'pe2',
+    text: "Which metric is most commonly used to evaluate performance in private equity investments?",
+    options: [
+      { id: 'pe2a', text: "Internal Rate of Return (IRR)", isCorrect: true },
+      { id: 'pe2b', text: "Price-to-Earnings Ratio", isCorrect: false },
+      { id: 'pe2c', text: "Dividend Yield", isCorrect: false },
+      { id: 'pe2d', text: "Beta", isCorrect: false }
+    ],
+    explanation: "IRR is the primary performance metric in private equity as it measures the annualized return on investments over the life of the fund, accounting for the timing of cash flows.",
+    category: "Finance"
+  },
+  {
+    id: 'pe3',
+    text: "What is a 'bolt-on acquisition' in private equity strategy?",
+    options: [
+      { id: 'pe3a', text: "Acquiring a competitor to eliminate market competition", isCorrect: false },
+      { id: 'pe3b', text: "Purchasing smaller companies to add to an existing portfolio company", isCorrect: true },
+      { id: 'pe3c', text: "Adding debt to increase returns", isCorrect: false },
+      { id: 'pe3d', text: "Spinning off underperforming divisions", isCorrect: false }
+    ],
+    explanation: "A bolt-on acquisition strategy involves purchasing smaller companies to integrate into an existing portfolio company, creating synergies and accelerating growth.",
+    category: "Finance"
+  }
+];
+
+// Retirement Planning questions
+export const mockRetirementPlanningQuestions: Question[] = [
+  {
+    id: 'rp1',
+    text: "What is the annual contribution limit for a 401(k) plan for individuals under 50 in 2023?",
+    options: [
+      { id: 'rp1a', text: "$19,500", isCorrect: false },
+      { id: 'rp1b', text: "$20,500", isCorrect: false },
+      { id: 'rp1c', text: "$22,500", isCorrect: true },
+      { id: 'rp1d', text: "$23,000", isCorrect: false }
+    ],
+    explanation: "The IRS set the 2023 contribution limit for 401(k) plans at $22,500 for individuals under 50, an increase from the previous year's limit.",
+    category: "Planning"
+  },
+  {
+    id: 'rp2',
+    text: "Which retirement income strategy aims to preserve principal while living off investment income?",
+    options: [
+      { id: 'rp2a', text: "4% Rule", isCorrect: false },
+      { id: 'rp2b', text: "Income Flooring", isCorrect: false },
+      { id: 'rp2c', text: "Systematic Withdrawal", isCorrect: false },
+      { id: 'rp2d', text: "Endowment Approach", isCorrect: true }
+    ],
+    explanation: "The Endowment Approach focuses on preserving principal and generating income through dividends, interest, and other income-producing investments without depleting the principal balance.",
+    category: "Planning"
+  },
+  {
+    id: 'rp3',
+    text: "What age does the IRS define as Required Minimum Distribution (RMD) age for retirement accounts?",
+    options: [
+      { id: 'rp3a', text: "59½", isCorrect: false },
+      { id: 'rp3b', text: "65", isCorrect: false },
+      { id: 'rp3c', text: "70½", isCorrect: false },
+      { id: 'rp3d', text: "73", isCorrect: true }
+    ],
+    explanation: "Following the SECURE 2.0 Act, the age when RMDs must begin is 73 (as of 2023), and it will increase to 75 in 2033.",
+    category: "Planning"
+  }
+];
+
+// Economic Theory questions
+export const mockEconomicTheoryQuestions: Question[] = [
+  {
+    id: 'et1',
+    text: "Which economic concept describes the trade-off between inflation and unemployment?",
+    options: [
+      { id: 'et1a', text: "Supply-side economics", isCorrect: false },
+      { id: 'et1b', text: "Monetarism", isCorrect: false },
+      { id: 'et1c', text: "Phillips Curve", isCorrect: true },
+      { id: 'et1d', text: "Laffer Curve", isCorrect: false }
+    ],
+    explanation: "The Phillips Curve illustrates the inverse relationship between unemployment rates and inflation, suggesting that lower unemployment may come at the cost of higher inflation.",
+    category: "General"
+  },
+  {
+    id: 'et2',
+    text: "What does Modern Monetary Theory (MMT) suggest about government spending and deficits?",
+    options: [
+      { id: 'et2a', text: "They should always be minimized", isCorrect: false },
+      { id: 'et2b', text: "They are limited only by inflation", isCorrect: true },
+      { id: 'et2c', text: "They must be balanced annually", isCorrect: false },
+      { id: 'et2d', text: "They should only increase during economic growth", isCorrect: false }
+    ],
+    explanation: "MMT proposes that governments issuing their own currency can spend freely until reaching the economy's productive capacity, with inflation being the primary constraint rather than debt levels.",
+    category: "General"
+  },
+  {
+    id: 'et3',
+    text: "Which of the following best describes the concept of 'creative destruction' in economic theory?",
+    options: [
+      { id: 'et3a', text: "Government intervention to restructure failing industries", isCorrect: false },
+      { id: 'et3b', text: "The process by which new innovations replace older technologies", isCorrect: true },
+      { id: 'et3c', text: "Deliberate dismantling of monopolies", isCorrect: false },
+      { id: 'et3d', text: "Economic collapse leading to new system formation", isCorrect: false }
+    ],
+    explanation: "Creative destruction, coined by economist Joseph Schumpeter, describes how the economy evolves when new innovations displace established methods and businesses, driving economic growth while causing disruption.",
+    category: "General"
+  }
+];
+
+// Financial History questions
+export const mockFinancialHistoryQuestions: Question[] = [
+  {
+    id: 'fh1',
+    text: "Which event triggered the 2008 global financial crisis?",
+    options: [
+      { id: 'fh1a', text: "Asian currency crisis", isCorrect: false },
+      { id: 'fh1b', text: "Dot-com bubble burst", isCorrect: false },
+      { id: 'fh1c', text: "U.S. subprime mortgage collapse", isCorrect: true },
+      { id: 'fh1d', text: "European sovereign debt crisis", isCorrect: false }
+    ],
+    explanation: "The collapse of the U.S. subprime mortgage market led to massive defaults, affecting financial institutions globally and triggering the worst financial crisis since the Great Depression.",
+    category: "General"
+  },
+  {
+    id: 'fh2',
+    text: "What was the first major stock market crash in modern financial history?",
+    options: [
+      { id: 'fh2a', text: "Wall Street Crash of 1929", isCorrect: false },
+      { id: 'fh2b', text: "Dutch Tulip Mania of 1637", isCorrect: true },
+      { id: 'fh2c', text: "South Sea Bubble of 1720", isCorrect: false },
+      { id: 'fh2d', text: "Panic of 1873", isCorrect: false }
+    ],
+    explanation: "Dutch Tulip Mania of 1637 is considered the first documented financial bubble and crash, where tulip bulb prices reached extraordinary heights before collapsing dramatically.",
+    category: "General"
+  },
+  {
+    id: 'fh3',
+    text: "Which landmark legislation was created in response to the Great Depression to regulate the securities industry?",
+    options: [
+      { id: 'fh3a', text: "Dodd-Frank Act", isCorrect: false },
+      { id: 'fh3b', text: "Sarbanes-Oxley Act", isCorrect: false },
+      { id: 'fh3c', text: "Glass-Steagall Act", isCorrect: true },
+      { id: 'fh3d', text: "Gramm-Leach-Bliley Act", isCorrect: false }
+    ],
+    explanation: "The Glass-Steagall Act of 1933 separated commercial and investment banking activities to prevent the speculative activities that contributed to the 1929 crash and subsequent depression.",
+    category: "General"
+  }
+];
+
 // Mock badges data
 export const mockBadges: BadgeInfo[] = [
   {

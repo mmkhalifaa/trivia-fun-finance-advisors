@@ -28,6 +28,8 @@ export const ChallengeCard = ({ challenge }: ChallengeCardProps) => {
       case 'medium':
         return 'border-amber-200 bg-amber-50 text-amber-700';
       case 'hard':
+      case 'advanced':
+      case 'expert':
         return 'border-red-200 bg-red-50 text-red-700';
       default:
         return '';
