@@ -1,6 +1,6 @@
 
 import { ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Award, ChevronRight, Sparkles, Trophy } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { FadeIn } from '../shared/Transitions';
@@ -24,6 +24,7 @@ interface QuizResultsProps {
   } | null;
   quizType?: string;
   sourceURL?: string;
+  onQuizComplete?: () => void; // Added callback for quiz completion
 }
 
 export const QuizResults = ({
@@ -35,6 +36,7 @@ export const QuizResults = ({
   badgeEarned = null,
   quizType = 'daily',
   sourceURL = '/',
+  onQuizComplete,
 }: QuizResultsProps) => {
   const navigate = useNavigate();
   
@@ -81,6 +83,10 @@ export const QuizResults = ({
     // cleanup can happen before navigation
     return (e: React.MouseEvent) => {
       e.preventDefault();
+      // Execute callback before navigation if provided
+      if (onQuizComplete) {
+        onQuizComplete();
+      }
       navigate(path);
     };
   };
