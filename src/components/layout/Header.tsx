@@ -1,7 +1,7 @@
 
 import { useAuth } from '../../context/AuthContext';
 import { Link, NavLink } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Home, Award, BarChart3, User, BookOpen, Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -23,89 +23,86 @@ export const Header = () => {
 
   return (
     <header className="w-full bg-white border-b border-border sticky top-0 z-10">
-      <div className="container max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center">
-          <Link to="/" className="font-bold text-xl text-primary mr-8">PB Trivia</Link>
-          
-          {/* Navigation tabs - now at the same level as the title */}
-          <div className="hidden md:flex items-center">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) => 
-                  cn(
-                    "flex items-center justify-center px-4 h-full transition-all duration-300 relative",
-                    isActive 
-                      ? "text-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <item.icon className="w-4 h-4 mr-2" />
-                    <span className="text-sm font-medium">{item.label}</span>
-                    {isActive && (
-                      <div className="absolute bottom-0 w-full h-0.5 bg-primary" />
-                    )}
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </div>
-        </div>
+      <div className="container max-w-5xl mx-auto px-4 flex items-center h-16">
+        {/* Logo */}
+        <Link to="/" className="font-bold text-xl text-primary mr-6">
+          PB Trivia
+        </Link>
         
-        <div className="flex items-center gap-2">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center flex-1 h-full">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => 
+                cn(
+                  "flex items-center justify-center px-4 h-full transition-all duration-300 relative",
+                  isActive 
+                    ? "text-primary" 
+                    : "text-muted-foreground hover:text-foreground"
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <item.icon className="w-4 h-4 mr-2" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                  {isActive && (
+                    <div className="absolute bottom-0 w-full h-0.5 bg-primary" />
+                  )}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+        
+        {/* Profile Badge - Always visible on desktop, right-aligned */}
+        <div className="ml-auto">
           {user && (
-            <div className="flex items-center gap-2">
-              <div className="hidden md:block text-sm mr-2">
-                <span className="font-medium">{user.name}</span>
-                {isAdmin && <span className="ml-1 text-muted-foreground">(Admin)</span>}
-              </div>
-              <Link to="/profile">
-                <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
-                  <span className="sr-only">Profile</span>
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
-                    {user.name?.charAt(0) || 'U'}
-                  </div>
-                </Button>
-              </Link>
-            </div>
+            <Link to="/profile" className="flex items-center gap-2">
+              <span className="hidden md:inline-block text-sm font-medium">
+                {user.name}
+                {isAdmin && <span className="ml-1 text-xs text-muted-foreground">(Admin)</span>}
+              </span>
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                  {user.name?.charAt(0) || 'U'}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           )}
         </div>
       </div>
       
-      {/* Mobile navigation - show tabs on smaller screens */}
-      <div className="md:hidden border-t border-border bg-white">
-        <div className="container max-w-5xl mx-auto">
-          <div className="flex items-center h-12 overflow-x-auto">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) => 
-                  cn(
-                    "flex items-center justify-center px-4 h-full transition-all duration-300 relative flex-shrink-0",
-                    isActive 
-                      ? "text-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <item.icon className="w-4 h-4 mr-2" />
-                    <span className="text-sm font-medium">{item.label}</span>
-                    {isActive && (
-                      <div className="absolute bottom-0 w-full h-0.5 bg-primary" />
-                    )}
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </div>
-        </div>
+      {/* Mobile Navigation */}
+      <div className="md:hidden border-t border-border bg-white overflow-x-auto">
+        <nav className="flex items-center justify-between">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => 
+                cn(
+                  "flex flex-col items-center justify-center py-2 px-2 flex-1 transition-all duration-300 relative",
+                  isActive 
+                    ? "text-primary" 
+                    : "text-muted-foreground hover:text-foreground"
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <item.icon className="w-5 h-5" />
+                  <span className="text-xs font-medium mt-1">{item.label}</span>
+                  {isActive && (
+                    <div className="absolute bottom-0 w-8 h-0.5 bg-primary rounded-full" />
+                  )}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
       </div>
     </header>
   );
