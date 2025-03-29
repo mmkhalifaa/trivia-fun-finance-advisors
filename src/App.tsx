@@ -9,6 +9,7 @@ import QuizPage from "./pages/QuizPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import BadgesPage from "./pages/BadgesPage";
 import ProfilePage from "./pages/ProfilePage";
+import ChallengesPage from "./pages/ChallengesPage";
 import NotFound from "./pages/NotFound";
 import { AnimatePresence } from "framer-motion";
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/badges" element={<BadgesPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/challenges" element={<ChallengesPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
