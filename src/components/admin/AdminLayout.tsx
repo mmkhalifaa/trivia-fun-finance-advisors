@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, 
@@ -8,13 +8,17 @@ import {
   FileEdit, 
   BarChart2, 
   Settings, 
-  ChevronLeft 
+  ChevronLeft,
+  LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/context/AuthContext';
 
 export const AdminLayout = () => {
   const location = useLocation();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   
   const navItems = [
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -23,6 +27,11 @@ export const AdminLayout = () => {
     { path: '/admin/reports', label: 'Reports', icon: BarChart2 },
     { path: '/admin/settings', label: 'Settings', icon: Settings },
   ];
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
   
   const isActive = (path: string, exact = false) => {
     if (exact) {
@@ -41,6 +50,15 @@ export const AdminLayout = () => {
             <span>Back to App</span>
           </Link>
           <h1 className="text-xl font-bold mx-auto">Admin Portal</h1>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleLogout}
+            className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </Button>
         </div>
       </header>
       

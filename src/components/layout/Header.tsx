@@ -1,12 +1,14 @@
 
 import { useAuth } from '../../context/AuthContext';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Home, Award, BarChart3, User, BookOpen, Settings } from 'lucide-react';
+import { Home, Award, BarChart3, User, BookOpen, Settings, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { Button } from '@/components/ui/button';
 
 export const Header = () => {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
+  const navigate = useNavigate();
 
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
@@ -20,6 +22,11 @@ export const Header = () => {
   if (isAdmin) {
     navItems.push({ path: '/admin', label: 'Admin', icon: Settings });
   }
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header className="w-full bg-white border-b border-border sticky top-0 z-10">
@@ -57,20 +64,31 @@ export const Header = () => {
           ))}
         </nav>
         
-        {/* Profile Badge - Always visible on desktop, right-aligned */}
-        <div className="ml-auto">
+        {/* Profile Badge and Logout - Always visible on desktop, right-aligned */}
+        <div className="ml-auto flex items-center gap-4">
           {user && (
-            <Link to="/profile" className="flex items-center gap-2">
-              <span className="hidden md:inline-block text-sm font-medium">
-                {user.name}
-                {isAdmin && <span className="ml-1 text-xs text-muted-foreground">(Admin)</span>}
-              </span>
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                  {user.name?.charAt(0) || 'U'}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            <>
+              <Link to="/profile" className="flex items-center gap-2">
+                <span className="hidden md:inline-block text-sm font-medium">
+                  {user.name}
+                  {isAdmin && <span className="ml-1 text-xs text-muted-foreground">(Admin)</span>}
+                </span>
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                    {user.name?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleLogout}
+                className="hidden md:flex items-center gap-1 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="sr-only md:not-sr-only">Logout</span>
+              </Button>
+            </>
           )}
         </div>
       </div>
