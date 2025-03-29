@@ -19,6 +19,9 @@ import {
 } from '../data/mockData';
 import { toast } from 'sonner';
 
+// Store active quiz sessions to track if user has navigated away
+const activeQuizSessions = new Map();
+
 const QuizPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,6 +36,7 @@ const QuizPage = () => {
   const [earnedBadge, setEarnedBadge] = useState<{name: string, description: string} | null>(null);
   const [showMorningMeetingPrompt, setShowMorningMeetingPrompt] = useState(false);
   const [showSpecializedChallenges, setShowSpecializedChallenges] = useState(false);
+  const [sessionId] = useState(() => `${quizType}-${Date.now()}`); // Generate a unique session ID
   
   // Get the appropriate questions based on quiz type
   const getQuestions = () => {
@@ -67,12 +71,47 @@ const QuizPage = () => {
   const totalQuestions = questions.length;
   
   useEffect(() => {
+    // When component mounts, check if there was a previous session for this quiz type
+    const previousSession = activeQuizSessions.get(quizType);
+    
+    // If there was a previous session but it's not this one, the user navigated away and came back
+    if (previousSession && previousSession !== sessionId) {
+      // Reset the quiz to initial state
+      setCurrentQuestionIndex(0);
+      setAnswers([]);
+      setCorrectAnswers([]);
+      setRemainingTimes([]);
+      setShowResults(false);
+      setEarnedBadge(null);
+      setShowMorningMeetingPrompt(false);
+      setShowSpecializedChallenges(false);
+      
+      // Show a toast to inform the user
+      toast.info("Challenge restarted");
+    }
+    
+    // Register this session as the active one for this quiz type
+    activeQuizSessions.set(quizType, sessionId);
+    
     // Simulate loading questions from API
     setQuizStarted(true);
     
+    // Cleanup when component unmounts
     return () => {
       // Cleanup if needed
     };
+  }, [quizType, sessionId]);
+  
+  // Also reset everything if the quiz type changes
+  useEffect(() => {
+    setCurrentQuestionIndex(0);
+    setAnswers([]);
+    setCorrectAnswers([]);
+    setRemainingTimes([]);
+    setShowResults(false);
+    setEarnedBadge(null);
+    setShowMorningMeetingPrompt(false);
+    setShowSpecializedChallenges(false);
   }, [quizType]);
   
   const handleAnswer = (optionId: string, timeRemaining: number) => {
@@ -239,7 +278,11 @@ const QuizPage = () => {
       {!showResults ? (
         <div className="flex-1 container max-w-5xl mx-auto px-4 py-8 flex flex-col">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => {
+              navigate('/');
+              // Clear this quiz session when navigating away
+              activeQuizSessions.delete(quizType);
+            }}
             className="text-muted-foreground hover:text-foreground transition-colors self-start mb-8"
           >
             ← Back to Home
@@ -284,6 +327,7 @@ const QuizPage = () => {
             streakDays={5} // This would come from user data in a real app
             badgeEarned={earnedBadge}
             quizType={quizType}
+            sourceURL={window.location.pathname + window.location.search}
           />
           
           {showSpecializedChallenges && (

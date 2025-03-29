@@ -1,6 +1,6 @@
 
 import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Award, ChevronRight, Sparkles, Trophy } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { FadeIn } from '../shared/Transitions';
@@ -36,6 +36,8 @@ export const QuizResults = ({
   quizType = 'daily',
   sourceURL = '/',
 }: QuizResultsProps) => {
+  const navigate = useNavigate();
+  
   const stats: ResultStat[] = [
     {
       label: "Score",
@@ -73,6 +75,15 @@ export const QuizResults = ({
   const isFromChallenge = quizType !== 'daily' || sourceURL.includes('challenges');
   const backLinkText = isFromChallenge ? "Back to Challenges" : "Back to Home";
   const backLinkURL = isFromChallenge ? "/challenges" : "/";
+  
+  const handleNavigation = (path: string) => {
+    // Instead of using Link component directly, we use navigate to ensure 
+    // cleanup can happen before navigation
+    return (e: React.MouseEvent) => {
+      e.preventDefault();
+      navigate(path);
+    };
+  };
   
   return (
     <div className="max-w-md mx-auto text-center">
@@ -131,8 +142,9 @@ export const QuizResults = ({
         )}
         
         <div className="space-y-4">
-          <Link 
-            to="/leaderboard" 
+          <a 
+            href="/leaderboard" 
+            onClick={handleNavigation("/leaderboard")}
             className={cn(
               "dashboard-card p-4 flex items-center justify-between w-full",
               "button-effect hover:border-primary/50"
@@ -145,10 +157,11 @@ export const QuizResults = ({
               <span className="font-medium">View Leaderboard</span>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
+          </a>
           
-          <Link 
-            to={backLinkURL}
+          <a 
+            href={backLinkURL}
+            onClick={handleNavigation(backLinkURL)}
             className={cn(
               "dashboard-card p-4 flex items-center justify-between w-full",
               "button-effect hover:border-primary/50"
@@ -161,7 +174,7 @@ export const QuizResults = ({
               <span className="font-medium">{backLinkText}</span>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
+          </a>
         </div>
       </FadeIn>
     </div>
