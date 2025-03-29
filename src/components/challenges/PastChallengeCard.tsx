@@ -17,14 +17,6 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from '../ui/chart';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableHead, 
-  TableBody, 
-  TableCell 
-} from '../ui/table';
 
 // Chart imports
 import {
@@ -61,9 +53,13 @@ interface PastChallengeCardProps {
 
 export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
+    if (!expanded) {
+      setSelectedQuestionIndex(null);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -114,6 +110,10 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
   ];
   
   const chartColors = ['#10b981', '#f43f5e']; // Green for correct, red for incorrect
+
+  const handleQuestionSelect = (index: number) => {
+    setSelectedQuestionIndex(selectedQuestionIndex === index ? null : index);
+  };
 
   return (
     <Card className={cn(
@@ -263,56 +263,103 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
               <h4 className="font-semibold text-sm mb-4">Questions & Answers</h4>
               
               <div className="max-h-96 overflow-y-auto pr-2">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px]">#</TableHead>
-                      <TableHead>Question & Answer</TableHead>
-                      <TableHead className="w-[80px] text-center">Result</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {challenge.questions.map((q, i) => (
-                      <TableRow key={i}>
-                        <TableCell className="font-medium">{i + 1}</TableCell>
-                        <TableCell>
-                          <div className="space-y-3">
-                            <div>
-                              <p className="font-medium mb-1">{q.question}</p>
-                              <div className="flex flex-col space-y-1">
+                <div className="space-y-4">
+                  {challenge.questions.map((q, i) => (
+                    <div 
+                      key={i}
+                      className={cn(
+                        "border rounded-lg overflow-hidden transition-all",
+                        q.isCorrect ? "border-green-200" : "border-red-200",
+                        selectedQuestionIndex === i ? "shadow-sm" : ""
+                      )}
+                    >
+                      <div 
+                        className={cn(
+                          "p-4 flex justify-between items-center cursor-pointer",
+                          q.isCorrect ? "bg-green-50" : "bg-red-50"
+                        )}
+                        onClick={() => handleQuestionSelect(i)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
+                            q.isCorrect ? "bg-green-100" : "bg-red-100"
+                          )}>
+                            <span className="font-semibold text-sm">{i + 1}</span>
+                          </div>
+                          <div className="flex-1 mr-4">
+                            <p className="font-medium text-sm line-clamp-2">{q.question}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <div className={cn(
+                            "p-1.5 rounded-full",
+                            q.isCorrect ? "bg-green-100" : "bg-red-100"
+                          )}>
+                            {q.isCorrect ? (
+                              <Check className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <X className="w-4 h-4 text-red-600" />
+                            )}
+                          </div>
+                          {selectedQuestionIndex === i ? (
+                            <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                          )}
+                        </div>
+                      </div>
+                      
+                      {selectedQuestionIndex === i && (
+                        <div className="p-4 bg-background border-t border-gray-100">
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-1 gap-4">
+                              <div className="space-y-2">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-semibold">Correct:</span>
-                                  <span className="text-sm text-green-600">{q.correctAnswer}</span>
+                                  <div className="p-1 rounded-full bg-green-100">
+                                    <Check className="w-3.5 h-3.5 text-green-600" />
+                                  </div>
+                                  <span className="text-xs font-semibold text-green-700">Correct Answer</span>
                                 </div>
-                                
+                                <div className="ml-7 p-3 bg-green-50 rounded-md text-sm">
+                                  {q.correctAnswer}
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-semibold">Your answer:</span>
-                                  <span className={cn(
-                                    "text-sm",
-                                    q.isCorrect ? "text-green-600" : "text-red-600"
+                                  <div className={cn(
+                                    "p-1 rounded-full",
+                                    q.isCorrect ? "bg-green-100" : "bg-red-100"
                                   )}>
-                                    {q.userAnswer}
+                                    {q.isCorrect ? (
+                                      <Check className="w-3.5 h-3.5 text-green-600" />
+                                    ) : (
+                                      <X className="w-3.5 h-3.5 text-red-600" />
+                                    )}
+                                  </div>
+                                  <span className={cn(
+                                    "text-xs font-semibold",
+                                    q.isCorrect ? "text-green-700" : "text-red-700"
+                                  )}>
+                                    Your Answer
                                   </span>
+                                </div>
+                                <div className={cn(
+                                  "ml-7 p-3 rounded-md text-sm",
+                                  q.isCorrect ? "bg-green-50" : "bg-red-50"
+                                )}>
+                                  {q.userAnswer}
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {q.isCorrect ? (
-                            <div className="mx-auto w-7 h-7 rounded-full bg-green-100 flex items-center justify-center">
-                              <Check className="w-4 h-4 text-green-600" />
-                            </div>
-                          ) : (
-                            <div className="mx-auto w-7 h-7 rounded-full bg-red-100 flex items-center justify-center">
-                              <X className="w-4 h-4 text-red-600" />
-                            </div>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
