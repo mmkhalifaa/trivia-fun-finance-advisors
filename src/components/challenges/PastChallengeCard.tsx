@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   Calendar, 
@@ -306,65 +305,47 @@ export const PastChallengeCard = ({ challenge }: PastChallengeCardProps) => {
                     
                     <CollapsibleContent>
                       <div className="p-4 bg-white border-t border-muted">
-                        <div className="grid gap-6">
-                          {/* Correct Answer */}
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <h5 className="text-sm font-semibold">Correct Answer:</h5>
+                        {question.isCorrect ? (
+                          <div className="flex items-start gap-3">
+                            <div className="bg-green-100 text-green-700 p-1.5 rounded-full flex-shrink-0 mt-0.5">
+                              <Check className="h-4 w-4" />
                             </div>
-                            <div className={cn(
-                              "p-4 rounded-lg bg-green-50 border border-green-100",
-                              "flex items-start gap-3"
-                            )}>
+                            <div>
+                              <p className="text-sm font-medium mb-1">Your answer was correct:</p>
+                              <p className="text-sm text-green-800 p-3 bg-green-50 rounded-md border border-green-100">
+                                {question.correctAnswer}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {/* Correct Answer */}
+                            <div className="flex items-start gap-3">
                               <div className="bg-green-100 text-green-700 p-1.5 rounded-full flex-shrink-0 mt-0.5">
                                 <Check className="h-4 w-4" />
                               </div>
                               <div>
-                                <p className="text-sm text-green-800">{question.correctAnswer}</p>
+                                <p className="text-sm font-medium mb-1">Correct answer:</p>
+                                <p className="text-sm text-green-800 p-3 bg-green-50 rounded-md border border-green-100">
+                                  {question.correctAnswer}
+                                </p>
                               </div>
                             </div>
-                          </div>
-                          
-                          {/* User Answer */}
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <h5 className="text-sm font-semibold">Your Answer:</h5>
-                            </div>
-                            <div className={cn(
-                              "p-4 rounded-lg border flex items-start gap-3",
-                              question.isCorrect 
-                                ? "bg-green-50 border-green-100" 
-                                : "bg-red-50 border-red-100"
-                            )}>
-                              <div className={cn(
-                                "p-1.5 rounded-full flex-shrink-0 mt-0.5",
-                                question.isCorrect 
-                                  ? "bg-green-100 text-green-700" 
-                                  : "bg-red-100 text-red-700"
-                              )}>
-                                {question.isCorrect ? (
-                                  <Check className="h-4 w-4" />
-                                ) : (
-                                  <X className="h-4 w-4" />
-                                )}
+                            
+                            {/* User Answer */}
+                            <div className="flex items-start gap-3">
+                              <div className="bg-red-100 text-red-700 p-1.5 rounded-full flex-shrink-0 mt-0.5">
+                                <X className="h-4 w-4" />
                               </div>
                               <div>
-                                <p className={cn(
-                                  "text-sm",
-                                  question.isCorrect ? "text-green-800" : "text-red-800"
-                                )}>
+                                <p className="text-sm font-medium mb-1">Your answer:</p>
+                                <p className="text-sm text-red-800 p-3 bg-red-50 rounded-md border border-red-100">
                                   {question.userAnswer}
                                 </p>
-                                
-                                {!question.isCorrect && (
-                                  <div className="mt-2 p-2 bg-white/80 border border-red-100 rounded text-xs text-red-600">
-                                    Your answer was incorrect. The correct answer is shown above.
-                                  </div>
-                                )}
                               </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
