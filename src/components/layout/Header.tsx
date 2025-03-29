@@ -7,7 +7,7 @@ import { cn } from '../../lib/utils';
 import { Button } from '@/components/ui/button';
 
 export const Header = () => {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const navItems = [
@@ -16,12 +16,8 @@ export const Header = () => {
     { path: '/leaderboard', label: 'Leaderboard', icon: BarChart3 },
     { path: '/badges', label: 'Badges', icon: Award },
     { path: '/profile', label: 'Profile', icon: User },
+    { path: '/admin', label: 'Admin', icon: Settings }, // Admin tab always visible
   ];
-  
-  // Only show admin link to users with admin role
-  if (isAdmin) {
-    navItems.push({ path: '/admin', label: 'Admin', icon: Settings });
-  }
 
   const handleLogout = () => {
     logout();
@@ -71,7 +67,6 @@ export const Header = () => {
               <Link to="/profile" className="flex items-center gap-2">
                 <span className="hidden md:inline-block text-sm font-medium">
                   {user.name}
-                  {isAdmin && <span className="ml-1 text-xs text-muted-foreground">(Admin)</span>}
                 </span>
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-primary/10 text-primary text-sm">

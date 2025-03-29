@@ -17,7 +17,7 @@ import { useAuth } from '@/context/AuthContext';
 
 export const AdminLayout = () => {
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logoutAdmin } = useAuth();
   const navigate = useNavigate();
   
   const navItems = [
@@ -29,8 +29,8 @@ export const AdminLayout = () => {
   ];
   
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    logoutAdmin();
+    // Stay on the same page, which will now show the admin login form
   };
   
   const isActive = (path: string, exact = false) => {
@@ -57,7 +57,7 @@ export const AdminLayout = () => {
             className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
           >
             <LogOut className="h-4 w-4" />
-            <span>Logout</span>
+            <span>Admin Logout</span>
           </Button>
         </div>
       </header>
