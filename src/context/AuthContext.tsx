@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
@@ -33,9 +32,9 @@ const MOCK_ADMIN: User = {
 };
 
 const MOCK_USER: User = {
-  id: '2',
-  name: 'Regular User',
-  email: 'user@example.com',
+  id: '3',
+  name: 'Dave Frame',
+  email: 'dave.frame@example.com',
   role: 'user'
 };
 
@@ -65,7 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Auto login for demo purposes (simulating SSO)
   useEffect(() => {
     if (!user) {
-      // For demo, we auto-login as regular user
+      // For demo, we auto-login as Dave Frame
       setUser(MOCK_USER);
       localStorage.setItem('currentUser', JSON.stringify(MOCK_USER));
     }
