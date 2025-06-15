@@ -5,6 +5,7 @@ import { QuizQuestion } from '../components/quiz/QuizQuestion';
 import { QuizResults } from '../components/quiz/QuizResults';
 import { MorningMeetingChallenge } from '../components/quiz/MorningMeetingChallenge';
 import { SpecializedChallenges } from '../components/quiz/SpecializedChallenges';
+import { ChallengeLanding } from '../components/quiz/ChallengeLanding';
 import { Timer, Clock } from 'lucide-react';
 import { 
   mockQuestions, 
@@ -45,6 +46,7 @@ const QuizPage = () => {
   const [remainingTimes, setRemainingTimes] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
   const [earnedBadge, setEarnedBadge] = useState<{name: string, description: string} | null>(null);
   const [showMorningMeetingPrompt, setShowMorningMeetingPrompt] = useState(false);
   const [showSpecializedChallenges, setShowSpecializedChallenges] = useState(false);
@@ -130,9 +132,8 @@ const QuizPage = () => {
     clearQuizSession();
   };
   
-  // Initialize or resume quiz session
+  // Check for existing session on mount
   useEffect(() => {
-    // Check if there's an existing session for this quiz type
     const session = getQuizSession();
     
     if (session) {
@@ -140,7 +141,7 @@ const QuizPage = () => {
       const elapsedSeconds = Math.floor((Date.now() - session.startTime) / 1000);
       const remainingTime = Math.max(0, session.timeLimit - elapsedSeconds);
       
-      // If there's still time left, resume the session
+      // If there's still time left and quiz was in progress, skip landing and resume
       if (remainingTime > 0) {
         setAnswers(session.answers);
         setCorrectAnswers(session.correctAnswers);
@@ -149,6 +150,8 @@ const QuizPage = () => {
         setQuizTimeLimit(session.timeLimit);
         setTimeRemaining(remainingTime);
         setTimerActive(true);
+        setQuizStarted(true);
+        setShowLanding(false);
         toast.info("Quiz resumed. Your timer is still running!");
       } else {
         // If time has expired, auto-submit the quiz
@@ -156,25 +159,11 @@ const QuizPage = () => {
         setCorrectAnswers(session.correctAnswers);
         setRemainingTimes(session.remainingTimes);
         setTimeRemaining(0);
+        setShowLanding(false);
         finishQuiz(session.answers, session.correctAnswers, session.remainingTimes);
         toast.warning("Time's up! Your quiz has been automatically submitted.");
       }
-    } else {
-      // Start a new quiz session
-      setCurrentQuestionIndex(0);
-      setAnswers([]);
-      setCorrectAnswers([]);
-      setRemainingTimes([]);
-      setTimeRemaining(DEFAULT_QUIZ_TIME_LIMIT);
-      setTimerActive(true);
-      
-      // Save initial quiz state
-      setTimeout(() => {
-        saveQuizSession();
-      }, 500);
     }
-    
-    setQuizStarted(true);
     
     // Cleanup when component unmounts
     return () => {
@@ -184,6 +173,25 @@ const QuizPage = () => {
       }
     };
   }, [quizType]);
+  
+  // Handle starting the quiz from landing page
+  const handleStartQuiz = () => {
+    setShowLanding(false);
+    setQuizStarted(true);
+    setTimerActive(true);
+    
+    // Reset all states for a fresh start
+    setCurrentQuestionIndex(0);
+    setAnswers([]);
+    setCorrectAnswers([]);
+    setRemainingTimes([]);
+    setTimeRemaining(DEFAULT_QUIZ_TIME_LIMIT);
+    
+    // Save initial quiz state
+    setTimeout(() => {
+      saveQuizSession();
+    }, 500);
+  };
   
   // Global timer effect
   useEffect(() => {
@@ -402,6 +410,11 @@ const QuizPage = () => {
     // Change the quiz type based on selected challenge
     navigate(`/quiz?type=${challengeId}`);
   };
+  
+  // Show landing page first
+  if (showLanding) {
+    return <ChallengeLanding onStartQuiz={handleStartQuiz} />;
+  }
   
   // JSX and rendering
   if (!quizStarted) {
