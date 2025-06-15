@@ -38,13 +38,36 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
   const [userProfileOpen, setUserProfileOpen] = useState(false);
   const [teamProfileOpen, setTeamProfileOpen] = useState(false);
   
-  const filteredData = useMemo(() => {
-    if (!searchQuery.trim()) return data;
+  const { topEntries, currentUserEntry } = useMemo(() => {
+    let filteredData = data;
     
-    return data.filter(item => 
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    // Apply search filter if there's a query
+    if (searchQuery.trim()) {
+      filteredData = data.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      // If searching, return all filtered results without the top 20 limit
+      return { topEntries: filteredData, currentUserEntry: null };
+    }
+    
+    // Find the current user/team entry
+    const userEntry = data.find(item => 
+      type === 'individuals' 
+        ? (item as LeaderboardUser).isCurrentUser 
+        : (item as TeamLeaderboardEntry).isUserTeam
     );
-  }, [data, searchQuery]);
+    
+    // Get top 20 entries
+    const top20 = data.slice(0, 20);
+    
+    // Check if user is in top 20
+    const userInTop20 = userEntry && userEntry.position <= 20;
+    
+    return {
+      topEntries: top20,
+      currentUserEntry: userInTop20 ? null : userEntry
+    };
+  }, [data, searchQuery, type]);
   
   const getTimeframeLabel = () => {
     switch (timeframe) {
@@ -62,6 +85,100 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
       setSelectedTeam(item as TeamLeaderboardEntry);
       setTeamProfileOpen(true);
     }
+  };
+
+  const renderTableRow = (item: LeaderboardUser | TeamLeaderboardEntry, isCurrentUserRow = false) => {
+    const isUser = type === 'individuals' 
+      ? (item as LeaderboardUser).isCurrentUser 
+      : (item as TeamLeaderboardEntry).isUserTeam;
+      
+    return (
+      <tr 
+        key={`${item.id}-${isCurrentUserRow ? 'user' : 'regular'}`}
+        className={cn(
+          "transition-all duration-200 cursor-pointer hover:bg-muted/50",
+          isUser ? "bg-primary/5 rounded-lg" : ""
+        )}
+        onClick={() => handleRowClick(item)}
+      >
+        <td className="px-4 py-3 align-middle">
+          <div className="flex items-center">
+            <div className="relative">
+              {item.position === 1 && (
+                <Trophy className="absolute -top-1 -left-1 w-4 h-4 text-amber-500" />
+              )}
+              {item.position === 2 && (
+                <Medal className="absolute -top-1 -left-1 w-4 h-4 text-slate-400" />
+              )}
+              {item.position === 3 && (
+                <Medal className="absolute -top-1 -left-1 w-4 h-4 text-amber-700" />
+              )}
+              <div className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
+                item.position === 1 ? "bg-amber-100 text-amber-800" :
+                item.position === 2 ? "bg-slate-100 text-slate-800" :
+                item.position === 3 ? "bg-amber-900/20 text-amber-800" :
+                "bg-secondary text-foreground"
+              )}>
+                {item.position}
+              </div>
+            </div>
+          </div>
+        </td>
+        {type === 'individuals' ? (
+          // Individual advisor row
+          <td className="px-4 py-3 align-middle">
+            <div className="flex items-center gap-3">
+              <img 
+                src={(item as LeaderboardUser).avatar}
+                alt={item.name}
+                className="w-10 h-10 rounded-full"
+              />
+              <div>
+                <p className={cn(
+                  "font-medium",
+                  isUser ? "text-primary" : ""
+                )}>
+                  {item.name}
+                  {isUser && " (You)"}
+                </p>
+              </div>
+            </div>
+          </td>
+        ) : (
+          // Team row
+          <td className="px-4 py-3 align-middle">
+            <div>
+              <p className={cn(
+                "font-medium",
+                isUser ? "text-primary" : ""
+              )}>
+                {item.name}
+                {isUser && " (Your Team)"}
+              </p>
+            </div>
+          </td>
+        )}
+        <td className="px-4 py-3 text-right align-middle font-medium">
+          {item.points.toLocaleString()}
+        </td>
+        <td className="px-4 py-3 text-right align-middle hidden md:table-cell">
+          {type === 'individuals' ? (
+            // Display streak for individuals
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              <span className="text-xs font-medium">{(item as LeaderboardUser).streak} days</span>
+            </div>
+          ) : (
+            // Display member count for teams
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary">
+              <Users className="w-3 h-3 text-foreground" />
+              <span className="text-xs font-medium">{(item as TeamLeaderboardEntry).members}</span>
+            </div>
+          )}
+        </td>
+      </tr>
+    );
   };
 
   return (
@@ -96,104 +213,31 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
             </tr>
           </thead>
           <tbody>
-            {filteredData.length > 0 ? (
-              filteredData.map(item => {
-                const isUser = type === 'individuals' 
-                  ? (item as LeaderboardUser).isCurrentUser 
-                  : (item as TeamLeaderboardEntry).isUserTeam;
-                  
-                return (
-                  <tr 
-                    key={item.id}
-                    className={cn(
-                      "transition-all duration-200 cursor-pointer hover:bg-muted/50",
-                      isUser ? "bg-primary/5 rounded-lg" : ""
-                    )}
-                    onClick={() => handleRowClick(item)}
-                  >
-                    <td className="px-4 py-3 align-middle">
-                      <div className="flex items-center">
-                        <div className="relative">
-                          {item.position === 1 && (
-                            <Trophy className="absolute -top-1 -left-1 w-4 h-4 text-amber-500" />
-                          )}
-                          {item.position === 2 && (
-                            <Medal className="absolute -top-1 -left-1 w-4 h-4 text-slate-400" />
-                          )}
-                          {item.position === 3 && (
-                            <Medal className="absolute -top-1 -left-1 w-4 h-4 text-amber-700" />
-                          )}
-                          <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
-                            item.position === 1 ? "bg-amber-100 text-amber-800" :
-                            item.position === 2 ? "bg-slate-100 text-slate-800" :
-                            item.position === 3 ? "bg-amber-900/20 text-amber-800" :
-                            "bg-secondary text-foreground"
-                          )}>
-                            {item.position}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    {type === 'individuals' ? (
-                      // Individual advisor row
-                      <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <img 
-                            src={(item as LeaderboardUser).avatar}
-                            alt={item.name}
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <div>
-                            <p className={cn(
-                              "font-medium",
-                              isUser ? "text-primary" : ""
-                            )}>
-                              {item.name}
-                              {isUser && " (You)"}
-                            </p>
-                          </div>
+            {topEntries.length > 0 ? (
+              <>
+                {/* Top entries */}
+                {topEntries.map(item => renderTableRow(item))}
+                
+                {/* Current user entry if not in top 20 */}
+                {currentUserEntry && (
+                  <>
+                    <tr>
+                      <td colSpan={4} className="px-4 py-2">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 border-t border-dashed border-muted-foreground/30"></div>
+                          <span className="text-xs text-muted-foreground px-2">Your Position</span>
+                          <div className="flex-1 border-t border-dashed border-muted-foreground/30"></div>
                         </div>
                       </td>
-                    ) : (
-                      // Team row
-                      <td className="px-4 py-3 align-middle">
-                        <div>
-                          <p className={cn(
-                            "font-medium",
-                            isUser ? "text-primary" : ""
-                          )}>
-                            {item.name}
-                            {isUser && " (Your Team)"}
-                          </p>
-                        </div>
-                      </td>
-                    )}
-                    <td className="px-4 py-3 text-right align-middle font-medium">
-                      {item.points.toLocaleString()}
-                    </td>
-                    <td className="px-4 py-3 text-right align-middle hidden md:table-cell">
-                      {type === 'individuals' ? (
-                        // Display streak for individuals
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                          <span className="text-xs font-medium">{(item as LeaderboardUser).streak} days</span>
-                        </div>
-                      ) : (
-                        // Display member count for teams
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary">
-                          <Users className="w-3 h-3 text-foreground" />
-                          <span className="text-xs font-medium">{(item as TeamLeaderboardEntry).members}</span>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
+                    </tr>
+                    {renderTableRow(currentUserEntry, true)}
+                  </>
+                )}
+              </>
             ) : (
               <tr>
                 <td colSpan={4} className="text-center py-8 text-muted-foreground">
-                  No results found for "{searchQuery}"
+                  {searchQuery ? `No results found for "${searchQuery}"` : 'No leaderboard data available'}
                 </td>
               </tr>
             )}
