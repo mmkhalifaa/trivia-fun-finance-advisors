@@ -39,23 +39,33 @@ export const LeaderboardTable = ({ data, timeframe, type }: LeaderboardTableProp
   const [teamProfileOpen, setTeamProfileOpen] = useState(false);
   
   const { topEntries, currentUserEntry } = useMemo(() => {
-    let filteredData = data;
-    
     // Apply search filter if there's a query
     if (searchQuery.trim()) {
-      filteredData = data.filter(item => 
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      // If searching, return all filtered results without the top 20 limit
-      return { topEntries: filteredData, currentUserEntry: null };
+      if (type === 'individuals') {
+        const individualData = data as LeaderboardUser[];
+        const filteredData = individualData.filter(item => 
+          item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        return { topEntries: filteredData, currentUserEntry: null };
+      } else {
+        const teamData = data as TeamLeaderboardEntry[];
+        const filteredData = teamData.filter(item => 
+          item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        return { topEntries: filteredData, currentUserEntry: null };
+      }
     }
     
     // Find the current user/team entry
-    const userEntry = data.find(item => 
-      type === 'individuals' 
-        ? (item as LeaderboardUser).isCurrentUser 
-        : (item as TeamLeaderboardEntry).isUserTeam
-    );
+    let userEntry: LeaderboardUser | TeamLeaderboardEntry | undefined;
+    
+    if (type === 'individuals') {
+      const individualData = data as LeaderboardUser[];
+      userEntry = individualData.find(item => item.isCurrentUser);
+    } else {
+      const teamData = data as TeamLeaderboardEntry[];
+      userEntry = teamData.find(item => item.isUserTeam);
+    }
     
     // Get top 20 entries
     const top20 = data.slice(0, 20);
